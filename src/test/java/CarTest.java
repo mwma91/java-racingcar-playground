@@ -1,8 +1,5 @@
 import gameobject.Car;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-
-import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -10,15 +7,11 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 public class CarTest {
     @Test
     void 길이제한을_초과하는_이름() {
-        assertThatCode(() -> {
-            new Car("amazon");
-        })
+        assertThatCode(() -> new Car("amazon"))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("5자 이하");
 
-        assertThatCode(() -> {
-            new Car("");
-        })
+        assertThatCode(() -> new Car(""))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("1자 이상");
     }
@@ -31,9 +24,7 @@ public class CarTest {
 
     @Test
     void 적절하지_않은_이름() {
-        assertThatCode(() -> {
-            new Car(null);
-        })
+        assertThatCode(() -> new Car(null))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("null");
     }
@@ -45,9 +36,7 @@ public class CarTest {
         assertThat(car.getPosition()).isEqualTo(0);
         car.run(4);
         assertThat(car.getPosition()).isEqualTo(1);
-        assertThatCode(() -> {
-            car.run(10);
-        })
+        assertThatCode(() -> car.run(10))
                 .isInstanceOf(RuntimeException.class);
 
     }
