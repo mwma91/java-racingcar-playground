@@ -1,22 +1,22 @@
 package gameobject;
 
-import java.util.Arrays;
+import logic.RandomUtil;
+import logic.ValidationUtils;
+
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Cars {
+    private int moveCount;
     List<Car> cars;
 
-    public Cars(String input) {
-        if (isNullOrEmpty(input)) {
-            throw new RuntimeException();
-        }
-        String[] names = input.split(",");
-        if (names.length < 1) {
-            throw new RuntimeException();
+    public Cars(List<String> carNames) {
+        if (!ValidationUtils.validateCarNames(carNames)) {
+            throw new IllegalArgumentException();
         }
 
-        this.cars = Arrays.stream(names)
+        this.cars = carNames.stream()
                 .map(Car::new)
                 .collect(Collectors.toList());
     }
@@ -28,7 +28,28 @@ public class Cars {
                 .orElse(null);
     }
 
-    private static boolean isNullOrEmpty(String input) {
-        return input == null || input.isEmpty();
+    public Map<String, Integer> run() {
+        for (Car car : cars) {
+            car.run(RandomUtil.getPower());
+        }
+        ++this.moveCount;
+        return cars.stream()
+                .collect(Collectors.toMap(Car::getName, Car::getPosition));
+    }
+
+    public int getMoveCount() {
+        return this.moveCount;
+    }
+
+    public List<String> getWinners() {
+        int winnerMoveCount = cars.stream()
+                .mapToInt(Car::getPosition)
+                .max()
+                .orElse(0);
+
+        return cars.stream()
+                .filter(car -> car.getPosition() == winnerMoveCount)
+                .map(Car::getName)
+                .collect(Collectors.toList());
     }
 }
